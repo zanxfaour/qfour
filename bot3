@@ -1,0 +1,29 @@
+from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
+from telegram.ext import Application, MessageHandler, filters, ContextTypes
+
+TOKEN = "8956980779:AAHRTwK24zV0VvMhisfX26vWfKp8p6bBrJ4"
+
+BUTTONS = InlineKeyboardMarkup([
+    [
+        InlineKeyboardButton("👕 قسم علوي", url="https://t.me/Q4men"),
+        InlineKeyboardButton("👖 قسم سفلي", url="https://t.me/Q4MODA"),
+    ]
+])
+
+async def handle_post(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    post = update.channel_post
+    if not post:
+        return
+
+    try:
+        await context.bot.edit_message_reply_markup(
+            chat_id=post.chat.id,
+            message_id=post.message_id,
+            reply_markup=BUTTONS
+        )
+    except Exception as e:
+        print(f"خطأ: {e}")
+
+app = Application.builder().token(TOKEN).build()
+app.add_handler(MessageHandler(filters.ChatType.CHANNEL, handle_post))
+app.run_polling()
